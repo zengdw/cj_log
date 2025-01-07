@@ -2,11 +2,11 @@
 
 [package]
   cjc-version = "0.57.3"
-  compile-option = "--debug-macro"
+  compile-option = ""
   description = "nothing here"
   link-option = ""
   name = "cj_log_framework"
-  output-type = "executable"
+  output-type = "static"
   override-compile-option = ""
   src-dir = ""
   target-dir = ""

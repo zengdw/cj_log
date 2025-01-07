@@ -1,21 +1,23 @@
 macro package cj_log_framework.macros
 
-import std.ast.{Tokens, parseDecl, ClassDecl, FuncDecl, diagReport, DiagReportLevel, VarDecl, Token, TokenKind, MainDecl, Decl, Node}
+import std.ast.* /* cjlint-ignore !G.PKG.01*/
 public import cj_log_framework.logger.LoggerFactroy
 import std.collection.ArrayList
+import std.reflect.TypeInfo
 
 public macro log(input: Tokens): Tokens {
     let decl = parseDecl(input)
-    input.dump()
     match (decl) {
         case classDecl: ClassDecl =>
-            classDecl.body.decls.prepend(createLogger(classDecl.identifier))
+            classDecl.body.decls.prepend(createLogger())
+            logAttr(classDecl.body.decls)
             return classDecl.toTokens()
         case funcDecl: FuncDecl =>
-            funcDecl.block.nodes.prepend(createLogger(funcDecl.identifier))
+            funcDecl.block.nodes.prepend(createLogger())
+            logAttr(funcDecl.block.nodes)
             return funcDecl.toTokens()
         case mainDecl: MainDecl =>
-            mainDecl.block.nodes.prepend(createLogger(mainDecl.identifier))
+            mainDecl.block.nodes.prepend(createLogger())
             logAttr(mainDecl.block.nodes)
             return mainDecl.toTokens()
         case _ => diagReport(DiagReportLevel.ERROR, input, "Expected a class or function declaration", "")
@@ -23,18 +25,41 @@ public macro log(input: Tokens): Tokens {
     return input
 }
 
-func logAttr(decls: ArrayList<Node>): ArrayList<Node> {
-    for (decl in decls where decl is VarDecl) {
-        let varDecl = (decl as VarDecl).getOrThrow()
-        varDecl.dump()
+func logAttr(decls: ArrayList<Decl>) {
+    for (decl in decls where decl is FuncDecl) {
+        let funcDecl = (decl as FuncDecl).getOrThrow()
+        logAttr(funcDecl.block.nodes)
     }
-
-    return decls
 }
 
-func createLogger(loggerName: Token) {
-    let loggerNameToken = Token(TokenKind.STRING_LITERAL, loggerName.value)
-    VarDecl(quote(
-          let log = LoggerFactroy.createLogger($(loggerNameToken))
+func logAttr(nodes: ArrayList<Node>) {
+    for (node in nodes where node is CallExpr) {
+        let callExpr = (node as CallExpr).getOrThrow()
+        let callFunc = callExpr.callFunc
+        if (!(callFunc is MemberAccess)) {
+            continue
+        }
+        let memberAccess = (callFunc as MemberAccess).getOrThrow()
+        if (!(memberAccess.baseExpr is RefExpr)) {
+            continue
+        }
+        let callName = (memberAccess.baseExpr as RefExpr).getOrThrow().identifier.value
+        if (callName != "log") {
+            continue
+        }
+        let arguments = callExpr.arguments
+        let lineToken = Token(TokenKind.INTEGER_LITERAL, callExpr.callFunc.beginPos.line.toString())
+        let tuple = TupleLiteral(quote(
+            ("line", $(lineToken))
         ))
-}   
+        let arg = Argument()
+        arg.expr = tuple
+        arguments.append(arg)
+    }
+}
+
+func createLogger() {
+    VarDecl(quote(
+          let log = LoggerFactroy.createLogger(@sourcePackage() + "." + @sourceFile())
+        ))
+}
