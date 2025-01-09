@@ -6,32 +6,30 @@ import std.console.Console
 import std.collection.HashMap
 import log.{LogValue, Attr}
 
-public class ConsoleWriter <: Writer {
+public class ConsoleWriter <: AbstractWriter {
     let o: OutputStream
-    let DEFAULT_FORMAT = "%d{yyyy-MM-dd HH:mm:ss.SSS} -%5p %-40.40logger{39}: %m%n"
+    let DEFAULT_FORMAT = "%d{yyyy-MM-dd HH:mm:ss} -%5p %logger:%line : %m%n"
+    var _pattern: ?String = None
 
     public init() {
         this.o = Console.stdOut
     }
 
-    public func write(record: LogRecord): Unit {
-        let time = record.time.toString("yyyy-MM-dd HH:mm:ss")
-        let level = record.level.toString()
-        let attrMap = HashMap<String, String>()
-        for (attr in record.attrs) {
-            attrMap.put(
-                attr[0],
-                match (attr[1]) {
-                    case s: String => s
-                    case i: Int64 => i.toString()
-                    case _ => ""
-                }
-            )
+    public mut prop pattern: ?String {
+        get() {
+            _pattern
         }
-        let loggerName = attrMap.get("loggerName") ?? ""
-        let line = attrMap.get("line") ?? ""
-        let message = "${time} -${level} ${loggerName}:${line} : ${record.message} \n"
+        set(v) {
+            _pattern = v
+        }
+    }
+
+    public func write(record: LogRecord): Unit {
+        let message = logFormat(record)
         o.write(message.toArray())
         o.flush()
+    }
+
+    public func close() {
     }
 }

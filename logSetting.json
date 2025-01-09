@@ -1,0 +1,21 @@
+{
+  "level": "INFO",
+  "writers": [
+    {
+      "filePath": "./log",
+      "writerName": "consoleWriter",
+      "fileName": "out.log",
+      "pattern": "",
+      "name": "console"
+    }
+  ],
+  "loggers": [
+    {
+      "level": "DEBUG",
+      "logger": "cj_log_framework.util",
+      "loggerClass": "cj_log_framework.logger.BaseLogger",
+      "writers": ["console"],
+      "additivity": true
+    }
+  ]
+}

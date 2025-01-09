@@ -3,7 +3,6 @@ macro package cj_log_framework.macros
 import std.ast.* /* cjlint-ignore !G.PKG.01*/
 public import cj_log_framework.logger.LoggerFactroy
 import std.collection.ArrayList
-import std.reflect.TypeInfo
 
 public macro log(input: Tokens): Tokens {
     let decl = parseDecl(input)

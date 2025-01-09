@@ -9,13 +9,13 @@ import std.sync.AtomicBool
 import cj_log_framework.writer.Writer
 
 public class BaseLogger <: Logger {
-    let w: Writer
+    var writers: Array<Writer>
     var _level: LogLevel = LogLevel.INFO
     let _attrs = ArrayList<Attr>()
     let _closed = AtomicBool(false)
 
-    public init(writer: Writer) {
-        w = writer
+    public init(writers: Array<Writer>) {
+        this.writers = writers
     }
 
     public mut prop level: LogLevel {
@@ -28,8 +28,11 @@ public class BaseLogger <: Logger {
     }
 
     public func close() {
-        _closed.compareAndSwap(false, true)
-        return
+        if (_closed.compareAndSwap(false, true)) {
+            for (w in writers) {
+                w.close()
+            }
+        }
     }
 
     public func isClosed(): Bool {
@@ -61,7 +64,9 @@ public class BaseLogger <: Logger {
         if (!isClosed()) {
             let attrs = _attrs.toArray().concat(record.attrs)
             record.attrs = attrs
-            w.write(record)
+            for (w in writers) {
+                w.write(record)
+            }
         }
     }
 }
