@@ -2,10 +2,7 @@
   "level": "INFO",
   "writers": [
     {
-      "filePath": "./log",
       "writerName": "consoleWriter",
-      "fileName": "out.log",
-      "pattern": "",
       "name": "console"
     }
   ],

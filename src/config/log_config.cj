@@ -93,7 +93,7 @@ public class LoggerConfig <: Serializable<LoggerConfig> {
 public class LogWriterConfig <: Serializable<LogWriterConfig> {
     public LogWriterConfig(
         public let filePath: ?String,
-        public let writerName: ?String,
+        public let writerClass: ?String,
         public let fileName: ?String,
         public let pattern: ?String,
         public let name: ?String
@@ -103,7 +103,7 @@ public class LogWriterConfig <: Serializable<LogWriterConfig> {
     public func serialize(): DataModel {
         return DataModelStruct()
             .add(field("filePath", filePath))
-            .add(field("writerName", writerName))
+            .add(field("writerClass", writerClass))
             .add(field("fileName", fileName))
             .add(field("pattern", pattern))
             .add(field("name", name))
@@ -116,7 +116,7 @@ public class LogWriterConfig <: Serializable<LogWriterConfig> {
         }
         let result = LogWriterConfig(
             get(dms, "filePath"),
-            get(dms, "writerName"),
+            get(dms, "writerClass"),
             get(dms, "fileName"),
             get(dms, "pattern"),
             get(dms, "name")

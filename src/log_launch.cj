@@ -25,12 +25,12 @@ public class Context {
      * 初始化日志
      */
     func initLog() {
-        for (w in logConfig.writers where w.writerName != None) {
-            if ("consoleWriter" == (w.writerName ?? "")) {
+        for (w in logConfig.writers where w.name != None) {
+            if ("consoleWriter" == (w.name ?? "")) {
                 let consoleWriter = ConsoleWriter()
                 consoleWriter.pattern = w.pattern
                 writers.append(consoleWriter)
-            } else if ("fileWriter" == (w.writerName ?? "")) {
+            } else if ("fileWriter" == (w.name ?? "")) {
                 let fileWriter = FileWriter(w.filePath ?? "", w.fileName ?? "", w.pattern)
                 writers.append(fileWriter)
             }

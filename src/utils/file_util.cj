@@ -4,6 +4,9 @@ import std.fs.{File, exists, OpenMode}
 import encoding.json.{JsonValue, ToJson}
 import cj_log_framework.config.LogConfig
 import serialization.serialization.DataModel
+import std.collection.ArrayList
+import cj_log_framework.config.LogWriterConfig
+import cj_log_framework.writer.{ConsoleWriter, Writer}
 
 /*
     读取日志配置文件
@@ -11,7 +14,9 @@ import serialization.serialization.DataModel
  */
 protected func readSettingFile(filePath: String): LogConfig {
     if (!exists(filePath)) {
-        println("日志配置文件不存在，使用默认配置")
+        let writers = ArrayList<LogWriterConfig>()
+        writers.append(LogWriterConfig(None, "cj_log_framework.writer.ConsoleWriter", None, None, "consoleWriter"))
+        return LogConfig("INFO", writers, ArrayList())
     }
     let allBytes = File.readFrom(filePath)
     let setting = String.fromUtf8(allBytes)
