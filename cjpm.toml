@@ -6,7 +6,7 @@
   description = "nothing here"
   link-option = ""
   name = "cj_log_framework"
-  output-type = "dynamic"
+  output-type = "static"
   override-compile-option = ""
   src-dir = ""
   target-dir = ""

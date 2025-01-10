@@ -2,11 +2,16 @@ package cj_log_framework.writer
 
 import log.LogRecord
 import std.collection.HashMap
+import cj_log_framework.config.LogWriterConfig
+import std.reflect.TypeInfo
 
 public interface Writer {
     func write(record: LogRecord): Unit
 
     func close(): Unit
+
+    func build(c: LogWriterConfig): Unit
+
 }
 
 public abstract class AbstractWriter <: Writer {

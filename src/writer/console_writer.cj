@@ -5,10 +5,11 @@ import log.LogRecord
 import std.console.Console
 import std.collection.HashMap
 import log.{LogValue, Attr}
+import cj_log_framework.config.LogWriterConfig
+import std.reflect.TypeInfo
 
 public class ConsoleWriter <: AbstractWriter {
     let o: OutputStream
-    let DEFAULT_FORMAT = "%d{yyyy-MM-dd HH:mm:ss} -%5p %logger:%line : %m%n"
     var _pattern: ?String = None
 
     public init() {
@@ -31,5 +32,9 @@ public class ConsoleWriter <: AbstractWriter {
     }
 
     public func close() {
+    }
+
+    public func build(c: LogWriterConfig): Unit {
+        this.pattern = c.pattern
     }
 }

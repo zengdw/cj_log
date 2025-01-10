@@ -16,6 +16,7 @@ public class Context {
     let logConfig: LogConfig
 
     public init(logConfig: LogConfig) {
+        println(1)
         this.logConfig = logConfig
         level = logConfig.level
         initLog()
@@ -25,16 +26,16 @@ public class Context {
      * 初始化日志
      */
     func initLog() {
-        for (w in logConfig.writers where w.name != None) {
-            if ("consoleWriter" == (w.name ?? "")) {
-                let consoleWriter = ConsoleWriter()
-                consoleWriter.pattern = w.pattern
-                writers.append(consoleWriter)
-            } else if ("fileWriter" == (w.name ?? "")) {
-                let fileWriter = FileWriter(w.filePath ?? "", w.fileName ?? "", w.pattern)
-                writers.append(fileWriter)
-            }
+        for (w in logConfig.writers where w.writerClass != None) {
+            let typeInfo = TypeInfo.get(w.writerClass ?? "")
+            let classTypeInfo= (typeInfo as ClassTypeInfo).getOrThrow()
+
+            classTypeInfo.getInstanceFunction("build")
+            let writer = (classTypeInfo.construct() as Writer).getOrThrow()
+            writer.build(w)
+            writers.append(writer)
         }
+        println(2)
     }
 }
 

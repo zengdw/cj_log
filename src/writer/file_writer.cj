@@ -3,35 +3,36 @@ package cj_log_framework.writer
 import log.LogRecord
 import std.collection.HashMap
 import std.fs.{File, OpenMode, exists, Directory}
+import cj_log_framework.config.LogWriterConfig
 
 public class FileWriter <: AbstractWriter {
-    let DEFAULT_FORMAT = "%d{yyyy-MM-dd HH:mm:ss} -%5p %logger:%line : %m%n"
-    var f: File
-    var _filePath: String
-    var _fileName: String
-    var _pattern: ?String
-
-    public init(filePath: String, fileName: String, pattern: ?String) {
-        _filePath = filePath
-        _fileName = fileName
-        _pattern = pattern
-        if (!exists(filePath)) {
-            Directory.create(filePath)
-        }
-        var v = filePath
-        if (!filePath.endsWith("/")) {
-            v = filePath + "/"
-        }
-        f = File(v + fileName, OpenMode.Append)
-    }
+    var f: ?File = None
+    var _filePath: ?String = None
+    var _fileName: ?String = None
+    var _pattern: ?String = None
 
     public func write(record: LogRecord): Unit {
         let message = logFormat(record)
-        f.write(message.toArray())
+        f.getOrThrow().write(message.toArray())
     }
 
     public func close(): Unit {
-      println("FileWriter close")
-      f.close()
+      f.getOrThrow().close()
+    }
+
+    public func build(c: LogWriterConfig): Unit{
+        _fileName = c.fileName
+        _filePath = c.filePath
+        _pattern = c.pattern
+
+        var path = _filePath.getOrThrow {throw Exception("fileWriter的filePath参数为空")}
+        if (!exists(path)) {
+            Directory.create(path)
+        }
+        if (!path.endsWith("/")) {
+            path = path + "/"
+        }
+        var name = _fileName.getOrThrow {throw Exception("fileWriter的fileName参数为空")}
+        f = File(path + name, OpenMode.Append)
     }
 }
