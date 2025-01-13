@@ -5,7 +5,6 @@ public import cj_log_framework.logger.LoggerFactroy
 import std.collection.ArrayList
 
 public macro log(input: Tokens): Tokens {
-    println(3)
     let decl = parseDecl(input)
     match (decl) {
         case classDecl: ClassDecl =>

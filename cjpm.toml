@@ -11,4 +11,3 @@
   src-dir = ""
   target-dir = ""
   version = "1.0.0"
-  [package.package-configuration]

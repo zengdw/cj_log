@@ -7,11 +7,11 @@ import cj_log_framework.config.LogWriterConfig
 
 public class FileWriter <: AbstractWriter {
     var f: ?File = None
-    var _filePath: ?String = None
-    var _fileName: ?String = None
-    var _pattern: ?String = None
+    var filePath: ?String = None
+    var fileName: ?String = None
+    var pattern: ?String = None
 
-    public func write(record: LogRecord): Unit {
+    public func doWrite(record: LogRecord): Unit {
         let message = logFormat(record)
         f.getOrThrow().write(message.toArray())
     }
@@ -21,18 +21,18 @@ public class FileWriter <: AbstractWriter {
     }
 
     public func build(c: LogWriterConfig): Unit{
-        _fileName = c.fileName
-        _filePath = c.filePath
-        _pattern = c.pattern
+        fileName = c.fileName
+        filePath = c.filePath
+        pattern = c.pattern
 
-        var path = _filePath.getOrThrow {throw Exception("fileWriter的filePath参数为空")}
+        var path = filePath.getOrThrow {throw Exception("fileWriter的filePath参数为空")}
         if (!exists(path)) {
             Directory.create(path)
         }
         if (!path.endsWith("/")) {
             path = path + "/"
         }
-        var name = _fileName.getOrThrow {throw Exception("fileWriter的fileName参数为空")}
+        var name = fileName.getOrThrow {throw Exception("fileWriter的fileName参数为空")}
         f = File(path + name, OpenMode.Append)
     }
 }

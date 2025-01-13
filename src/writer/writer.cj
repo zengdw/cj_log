@@ -11,7 +11,6 @@ public interface Writer {
     func close(): Unit
 
     func build(c: LogWriterConfig): Unit
-
 }
 
 public abstract class AbstractWriter <: Writer {
@@ -34,4 +33,10 @@ public abstract class AbstractWriter <: Writer {
         let message = "${time} -${level} ${loggerName}:${line} : ${record.message} \n"
         return message
     }
+
+    public func write(record: LogRecord): Unit {
+        doWrite(record)
+    }
+
+    public func doWrite(record: LogRecord): Unit
 }

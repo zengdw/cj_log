@@ -1,13 +1,12 @@
 package cj_log_framework
 
-import cj_log_framework.utils.readSettingFile
+import std.collection.{ArrayList, HashMap}
+import cj_log_framework.config.{LogConfig, LogWriterConfig}
+import log.{Logger, LogLevel}
 import std.reflect.{TypeInfo, ClassTypeInfo}
-import cj_log_framework.config.{LogWriterConfig, LoggerConfig}
-import std.collection.ArrayList
-import cj_log_framework.writer.{ConsoleWriter, FileWriter, Writer}
-import log.{LogLevel, Logger}
-import std.collection.HashMap
-import cj_log_framework.config.LogConfig
+import cj_log_framework.utils.readSettingFile
+import cj_log_framework.writer.AbstractWriter
+import cj_log_framework.writer.Writer
 
 public class Context {
     var level: LogLevel
@@ -16,7 +15,6 @@ public class Context {
     let logConfig: LogConfig
 
     public init(logConfig: LogConfig) {
-        println(1)
         this.logConfig = logConfig
         level = logConfig.level
         initLog()
@@ -27,15 +25,19 @@ public class Context {
      */
     func initLog() {
         for (w in logConfig.writers where w.writerClass != None) {
-            let typeInfo = TypeInfo.get(w.writerClass ?? "")
-            let classTypeInfo= (typeInfo as ClassTypeInfo).getOrThrow()
-
-            classTypeInfo.getInstanceFunction("build")
-            let writer = (classTypeInfo.construct() as Writer).getOrThrow()
-            writer.build(w)
+            let ti = TypeInfo.get(w.writerClass ?? "")
+            let cti = match(ti as ClassTypeInfo) {
+                case Some(cti) => cti
+                case None => throw Exception("${w.writerClass} is not a class type")
+            }
+            let buildFun = cti.getInstanceFunction("build", TypeInfo.of<LogWriterConfig>())
+            let writer = match(cti.construct() as AbstractWriter) {
+                case Some(writer) => writer
+                case None => throw Exception("${w.writerClass} is not a subclass of cj_log_framework.writer.AbstractWriter")     
+            }
+            buildFun.apply(writer, w)
             writers.append(writer)
         }
-        println(2)
     }
 }
 

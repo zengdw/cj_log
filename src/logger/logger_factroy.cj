@@ -2,10 +2,10 @@ package cj_log_framework.logger
 
 import log.{Logger, LogLevel}
 import std.collection.HashMap
-import cj_log_framework.context
-import cj_log_framework.config.{LoggerConfig, LogWriterConfig}
 import cj_log_framework.writer.Writer
+import cj_log_framework.config.LoggerConfig
 import std.collection.ArrayList
+import cj_log_framework.context
 
 public class LoggerFactroy {
     public static func createLogger(name: String): Logger {
