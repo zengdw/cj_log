@@ -25,7 +25,7 @@ public class ConsoleWriter <: AbstractWriter {
         }
     }
 
-    public func doWrite(record: LogRecord): Unit {
+    public func write(record: LogRecord): Unit {
         let message = logFormat(record)
         o.write(message.toArray())
         o.flush()

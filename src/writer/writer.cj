@@ -34,9 +34,5 @@ public abstract class AbstractWriter <: Writer {
         return message
     }
 
-    public func write(record: LogRecord): Unit {
-        doWrite(record)
-    }
-
-    public func doWrite(record: LogRecord): Unit
+    public func write(record: LogRecord): Unit 
 }

@@ -11,16 +11,16 @@ public class FileWriter <: AbstractWriter {
     var fileName: ?String = None
     var pattern: ?String = None
 
-    public func doWrite(record: LogRecord): Unit {
+    public func write(record: LogRecord): Unit {
         let message = logFormat(record)
         f.getOrThrow().write(message.toArray())
     }
 
     public func close(): Unit {
-      f.getOrThrow().close()
+        f.getOrThrow().close()
     }
 
-    public func build(c: LogWriterConfig): Unit{
+    public func build(c: LogWriterConfig): Unit {
         fileName = c.fileName
         filePath = c.filePath
         pattern = c.pattern

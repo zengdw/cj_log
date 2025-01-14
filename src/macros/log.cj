@@ -1,10 +1,10 @@
 macro package cj_log_framework.macros
 
 import std.ast.* /* cjlint-ignore !G.PKG.01*/
-public import cj_log_framework.logger.LoggerFactroy
+public import cj_log_framework.LoggerFactroy
 import std.collection.ArrayList
 
-public macro log(input: Tokens): Tokens {
+public macro Log(input: Tokens): Tokens {
     let decl = parseDecl(input)
     match (decl) {
         case classDecl: ClassDecl =>
