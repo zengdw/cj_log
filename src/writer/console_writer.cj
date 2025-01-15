@@ -36,6 +36,6 @@ public class ConsoleWriter <: AbstractWriter {
     }
 
     public func build(c: LogWriterConfig): Unit {
-        this.pattern = c.pattern
+        this.pattern = c.properties.get("pattern")
     }
 }

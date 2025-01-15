@@ -13,26 +13,37 @@ public class FileWriter <: AbstractWriter {
 
     public func write(record: LogRecord): Unit {
         let message = logFormat(record)
-        f.getOrThrow().write(message.toArray())
+        if (let Some(f1) <- f) {
+            f1.write(message.toArray())
+        }
     }
 
     public func close(): Unit {
-        f.getOrThrow().close()
+        if (let Some(f1) <- f) {
+            f1.flush()
+            f1.close()
+        }
     }
 
     public func build(c: LogWriterConfig): Unit {
-        fileName = c.fileName
-        filePath = c.filePath
-        pattern = c.pattern
+        fileName = c.properties.get("fileName")
+        filePath = c.properties.get("filePath")
+        pattern = c.properties.get("pattern")
 
-        var path = filePath.getOrThrow {throw Exception("fileWriter的filePath参数为空")}
+        var path = match (filePath) {
+            case Some(v) => v
+            case None => throw Exception("fileWriter的filePath参数为空")
+        }
         if (!exists(path)) {
             Directory.create(path)
         }
         if (!path.endsWith("/")) {
             path = path + "/"
         }
-        var name = fileName.getOrThrow {throw Exception("fileWriter的fileName参数为空")}
+        var name = match (fileName) {
+            case Some(v) => v
+            case None => throw Exception("fileWriter的fileName参数为空")
+        }
         f = File(path + name, OpenMode.Append)
     }
 }

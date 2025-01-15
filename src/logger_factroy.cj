@@ -10,7 +10,9 @@ import cj_log_framework.utils.readSettingFile
 import cj_log_framework.writer.AbstractWriter
 import cj_log_framework.logger.BaseLogger
 
-public var context = Context(readSettingFile("./logSetting.json"))
+
+var logSettingPath = './logSetting.json'
+public var context = Context(readSettingFile(logSettingPath))
 
 public class Context {
     var level: LogLevel
@@ -28,8 +30,8 @@ public class Context {
      * 初始化日志
      */
     func initLog() {
-        for (w in logConfig.writers where w.writerClass != None) {
-            let ti = TypeInfo.get(w.writerClass ?? "")
+        for (w in logConfig.writers) {
+            let ti = TypeInfo.get(w.writerClass)
             let cti = match(ti as ClassTypeInfo) {
                 case Some(cti) => cti
                 case None => throw Exception("${w.writerClass} is not a class type")
@@ -40,7 +42,7 @@ public class Context {
                 case None => throw Exception("${w.writerClass} is not a subclass of cj_log_framework.writer.AbstractWriter")     
             }
             buildFun.apply(writer, w)
-            writers.append(writer)
+            writers.add(writer)
         }
     }
 }
@@ -53,6 +55,7 @@ public class LoggerFactroy {
             var logger: Logger
             match (loggerConfig) {
                 case Some(l) =>
+                    // TODO: 动态创建logger
                     logger = BaseLogger(getWriters(l))
                     logger.withAttrs(("logger", name))
                     logger.level = getLevel(l)
@@ -61,17 +64,17 @@ public class LoggerFactroy {
                     logger.withAttrs(("logger", name))
                     logger.level = context.level
             }
-            context.cacheLoggers.put(name, logger)
+            context.cacheLoggers.add(name, logger)
             return logger
         }
     }
 
     static func getWriters(l: LoggerConfig): Array<Writer> {
-        if (l.writers.size == 0) {
+        if (l.writerNames.size == 0) {
             if (!l.additivity) {
                 return Array<Writer>()
             } else {
-                let loggerConfig = findParentLoggerConfig(l.logger)
+                let loggerConfig = findParentLoggerConfig(l.loggerName)
                 return match (loggerConfig) {
                     case Some(l) => getWriters(l)
                     case None => context.writers.toArray()
@@ -79,14 +82,11 @@ public class LoggerFactroy {
             }
         }
         let writers = ArrayList<Writer>()
-        for (writerName in l.writers) {
+        for (writerName in l.writerNames) {
             var index = 0
             for (writer in context.logConfig.writers) {
-                if (writer.name == writerName) {
-                    match (context.writers.get(index)) {
-                        case Some(w) => writers.append(w)
-                        case None => {=>}()
-                    }
+                if (writer.writerName == writerName && let Some(w) <- context.writers.get(index)) {
+                    writers.add(w)
                     break
                 }
                 index++
@@ -100,7 +100,7 @@ public class LoggerFactroy {
             case Some(l) => l
             case None =>
                 if (l.additivity) {
-                    let loggerConfig = findParentLoggerConfig(l.logger)
+                    let loggerConfig = findParentLoggerConfig(l.loggerName)
                     match (loggerConfig) {
                         case Some(l) => getLevel(l)
                         case None => context.level
@@ -114,7 +114,7 @@ public class LoggerFactroy {
     static func findParentLoggerConfig(name: String): Option<LoggerConfig> {
         var loggerConfig: ?LoggerConfig = None
         for (l in context.logConfig.loggers) {
-            if (name.startsWith(l.logger)) {
+            if (name.startsWith(l.loggerName)) {
                 loggerConfig = l
                 break
             }
