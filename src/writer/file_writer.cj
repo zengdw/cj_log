@@ -9,7 +9,6 @@ public class FileWriter <: AbstractWriter {
     var f: ?File = None
     var filePath: ?String = None
     var fileName: ?String = None
-    var pattern: ?String = None
 
     public func write(record: LogRecord): Unit {
         let message = logFormat(record)

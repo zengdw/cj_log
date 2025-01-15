@@ -14,12 +14,15 @@ public interface Writer {
 }
 
 public abstract class AbstractWriter <: Writer {
+    let DEFAULT_PATTERN: String = "%{d(yyyy-MM-dd HH:mm:ss)} -%{5p} %{logger}:%{line} %{msg}"
+    var pattern: ?String = None
+
     public func logFormat(record: LogRecord): String {
-        let time = record.time.toString("yyyy-MM-dd HH:mm:ss")
+        let time = record.time.format("yyyy-MM-dd HH:mm:ss")
         let level = record.level.toString()
         let attrMap = HashMap<String, String>()
         for (attr in record.attrs) {
-            attrMap.put(
+            attrMap.add(
                 attr[0],
                 match (attr[1]) {
                     case s: String => s

@@ -4,7 +4,7 @@ import std.fs.{File, exists, OpenMode}
 import encoding.json.{JsonValue, ToJson}
 import cj_log_framework.config.LogConfig
 import serialization.serialization.DataModel
-import std.collection.ArrayList
+import std.collection.{ArrayList, HashMap}
 import cj_log_framework.config.LogWriterConfig
 import cj_log_framework.writer.{ConsoleWriter, Writer}
 
@@ -15,7 +15,7 @@ import cj_log_framework.writer.{ConsoleWriter, Writer}
 protected func readSettingFile(filePath: String): LogConfig {
     if (!exists(filePath)) {
         let writers = ArrayList<LogWriterConfig>()
-        writers.add(LogWriterConfig("cj_log_framework.writer.ConsoleWriter", "consoleWriter", None))
+        writers.add(LogWriterConfig("cj_log_framework.writer.ConsoleWriter", "consoleWriter", HashMap<String, String>()))
         return LogConfig("INFO", writers, ArrayList())
     }
     let allBytes = File.readFrom(filePath)

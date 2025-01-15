@@ -10,19 +10,9 @@ import std.reflect.TypeInfo
 
 public class ConsoleWriter <: AbstractWriter {
     let o: OutputStream
-    var _pattern: ?String = None
 
     public init() {
         this.o = Console.stdOut
-    }
-
-    public mut prop pattern: ?String {
-        get() {
-            _pattern
-        }
-        set(v) {
-            _pattern = v
-        }
     }
 
     public func write(record: LogRecord): Unit {

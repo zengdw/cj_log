@@ -41,7 +41,7 @@ public class BaseLogger <: Logger {
 
     public func withAttrs(attrs: Array<Attr>): Logger {
         if (attrs.size > 0) {
-            _attrs.appendAll(attrs)
+            _attrs.add(all: attrs)
         }
         return this
     }

@@ -1,0 +1,15 @@
+{
+  "level": "DEBUG",
+  "writers": [
+    {
+      "writerClass": "cj_log_framework.writer.FileWriter",
+      "filePath": "./log",
+      "fileName": "out.log",
+      "writerName": "fileWriter"
+    },
+    {
+      "writerClass": "cj_log_framework.writer.ConsoleWriter",
+      "writerName": "consoleWriter"
+    }
+  ]
+}

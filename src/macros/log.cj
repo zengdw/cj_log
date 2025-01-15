@@ -8,43 +8,38 @@ public macro Log(input: Tokens): Tokens {
     let decl = parseDecl(input)
     match (decl) {
         case classDecl: ClassDecl =>
-            classDecl.body.decls.prepend(createLogger())
-            logAttr(classDecl.body.decls)
+            classDecl.body.decls.add(createLogger(), at: 0)
+            classDecl.traverse(MyVisitor())
             return classDecl.toTokens()
         case funcDecl: FuncDecl =>
-            funcDecl.block.nodes.prepend(createLogger())
-            logAttr(funcDecl.block.nodes)
+            funcDecl.block.nodes.add(createLogger(), at: 0)
+            funcDecl.traverse(MyVisitor())
             return funcDecl.toTokens()
         case mainDecl: MainDecl =>
-            mainDecl.block.nodes.prepend(createLogger())
-            logAttr(mainDecl.block.nodes)
+            mainDecl.block.nodes.add(createLogger(), at: 0)
+            mainDecl.traverse(MyVisitor())
             return mainDecl.toTokens()
         case _ => diagReport(DiagReportLevel.ERROR, input, "Expected a class or function declaration", "")
     }
     return input
 }
 
-func logAttr(decls: ArrayList<Decl>) {
-    for (decl in decls where decl is FuncDecl) {
-        let funcDecl = (decl as FuncDecl).getOrThrow()
-        logAttr(funcDecl.block.nodes)
-    }
-}
-
-func logAttr(nodes: ArrayList<Node>) {
-    for (node in nodes where node is CallExpr) {
-        let callExpr = (node as CallExpr).getOrThrow()
+class MyVisitor <: Visitor {
+    public func visit(callExpr: CallExpr) {
         let callFunc = callExpr.callFunc
         if (!(callFunc is MemberAccess)) {
-            continue
+            return
         }
-        let memberAccess = (callFunc as MemberAccess).getOrThrow()
-        if (!(memberAccess.baseExpr is RefExpr)) {
-            continue
+        let memberAccess = match (callFunc as MemberAccess) {
+            case Some(memberAccess) => memberAccess
+            case None => return
         }
-        let callName = (memberAccess.baseExpr as RefExpr).getOrThrow().identifier.value
+        let callName = match (memberAccess.baseExpr as RefExpr) {
+            case Some(refExpr) => refExpr.identifier.value
+            case None => return
+        }
         if (callName != "log") {
-            continue
+            return
         }
         let arguments = callExpr.arguments
         let lineToken = Token(TokenKind.INTEGER_LITERAL, callExpr.callFunc.beginPos.line.toString())
@@ -53,7 +48,7 @@ func logAttr(nodes: ArrayList<Node>) {
         ))
         let arg = Argument()
         arg.expr = tuple
-        arguments.append(arg)
+        arguments.add(arg)
     }
 }
 
