@@ -1,8 +1,8 @@
 macro package cj_log_framework.macros
 
 import std.ast.* /* cjlint-ignore !G.PKG.01*/
-public import cj_log_framework.LoggerFactroy
 import std.collection.ArrayList
+public import cj_log_framework.logger.LoggerFactroy
 
 public macro Log(input: Tokens): Tokens {
     let decl = parseDecl(input)

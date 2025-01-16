@@ -6,7 +6,6 @@ import cj_log_framework.config.LogConfig
 import serialization.serialization.DataModel
 import std.collection.{ArrayList, HashMap}
 import cj_log_framework.config.LogWriterConfig
-import cj_log_framework.writer.{ConsoleWriter, Writer}
 
 /**
  * 读取日志配置文件
@@ -16,7 +15,7 @@ protected func readSettingFile(filePath: String): LogConfig {
     if (!exists(filePath)) {
         let writers = ArrayList<LogWriterConfig>()
         writers.add(LogWriterConfig("cj_log_framework.writer.ConsoleWriter", "consoleWriter", HashMap<String, String>()))
-        return LogConfig("INFO", writers, ArrayList())
+        return LogConfig("INFO", writers, ArrayList(), ArrayList())
     }
     let allBytes = File.readFrom(filePath)
     let setting = String.fromUtf8(allBytes)

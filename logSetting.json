@@ -11,5 +11,12 @@
       "writerClass": "cj_log_framework.writer.ConsoleWriter",
       "writerName": "consoleWriter"
     }
+  ],
+  "loggers": [],
+  "converter": [
+    {
+      "converterClass": "cj_log_framework.converter.DefaultConverter",
+      "converterKey": "defaultConverter"
+    }
   ]
 }

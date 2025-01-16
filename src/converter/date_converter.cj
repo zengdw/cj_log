@@ -1,0 +1,10 @@
+package cj_log_framework.converter
+
+public class DateConverter <: AbstactConverter {
+
+  public func convert(record: LogRecord): String {
+    let time = record.time
+    let format = getFirstOption() ?? "yyyy-MM-dd HH:mm:ss"
+    return time.format(format)
+  }
+ }

@@ -28,13 +28,16 @@ func clssLog() {
 @Log
 func patternTest() {
     let DEFAULT_PATTERN: String = "%{d(yyyy-MM-dd HH:mm:ss)} -%{5p} %{logger}:%{line} %{msg}"
-    let r = Regex("%\\{(.*?+)\\}").matcher(DEFAULT_PATTERN)
-    while (true) {
-        let matchData = r.find()
-        match (matchData) {
-            case Some(md) =>
-                log.info(md.matchStr(1))
-            case None => break
+    let r = Regex(#"%\{(\d*)([a-z]+)(?:\(([^)]*)\))?\}"#).matcher(DEFAULT_PATTERN)
+    let matchData = r.findAll()
+    if (let Some(arr) <- matchData) {
+        log.info("matchData size : ${arr.size}")
+        for (md in arr) {
+            log.info("groupNum : ${md.groupNumber()}")
+            log.info(md.matchStr(0))
+            for (i in 1..=md.groupNumber()) {
+                log.info(md.matchStr(i))
+            }
         }
     }
 }

@@ -1,8 +1,8 @@
 package cj_log_framework.config
 
-import log.LogLevel
-import std.collection.{ArrayList, HashMap, forEach, filter}
-import serialization.serialization.{Serializable, DataModelStruct, DataModel, field, DataModelString, DataModelSeq, 
+internal import log.LogLevel
+internal import std.collection.{ArrayList, HashMap, forEach, filter}
+internal import serialization.serialization.{Serializable, DataModelStruct, DataModel, field, DataModelString, DataModelSeq, 
     DataModelBool, Field}
 
 public class LogConfig <: Serializable<LogConfig> {
@@ -11,7 +11,8 @@ public class LogConfig <: Serializable<LogConfig> {
     public LogConfig(
         level: String,
         public let writers: ArrayList<LogWriterConfig>,
-        public let loggers: ArrayList<LoggerConfig>
+        public let loggers: ArrayList<LoggerConfig>,
+        public let converters: ArrayList<ConverterConfig>
     ) {
         this.level = logLevel(level)
     }
@@ -21,6 +22,7 @@ public class LogConfig <: Serializable<LogConfig> {
             .add(field("level", level.name))
             .add(field("writers", writers))
             .add(field("loggers", loggers))
+            .add(field("converters", converters))
     }
 
     public static func deserialize(dm: DataModel): LogConfig {
@@ -37,90 +39,11 @@ public class LogConfig <: Serializable<LogConfig> {
             match (dms.get("loggers")) {
                 case data: DataModelSeq => ArrayList<LoggerConfig>.deserialize(data)
                 case _ => ArrayList<LoggerConfig>()
-            }
-        )
-        return result
-    }
-}
-
-public class LoggerConfig <: Serializable<LoggerConfig> {
-    public let level: ?LogLevel
-
-    public LoggerConfig(
-        level: ?String,
-        public let loggerName: String,
-        public let loggerClass: String,
-        public let writerNames: ArrayList<String>,
-        public let properties: HashMap<String, String>,
-        public let additivity!: Bool = true
-    ) {
-        this.level = match (level) {
-            case Some(l) => logLevel(l)
-            case None => None
-        }
-    }
-
-    public func serialize(): DataModel {
-        return DataModelStruct()
-            .add(field("level", level?.name))
-            .add(field("loggerName", loggerName))
-            .add(field("writerNames", writerNames))
-            .add(field("additivity", additivity))
-            .add(field("loggerClass", loggerClass))
-            .add(field("properties", properties))
-    }
-
-    public static func deserialize(dm: DataModel): LoggerConfig {
-        let dms = match (dm) {
-            case data: DataModelStruct => data
-            case _ => throw Exception("this data is not DataModelStruct")
-        }
-        let ignoreKey = ["level", "additivity", "loggerClass", "writerNames", "loggerName"]
-        let result = LoggerConfig(
-            get(dms, "level"),
-            get(dms, "loggerName", "日志设置异常,loggerName未设置"),
-            get(dms, "loggerClass", "日志设置异常,loggerClass未设置"),
-            match (dms.get("writerNames")) {
-                case data: DataModelSeq => ArrayList.deserialize(data)
-                case _ => ArrayList()
             },
-            getProperties(dms, ignoreKey),
-            additivity: match (dms.get("additivity")) {
-                case data: DataModelBool => Bool.deserialize(data)
-                case _ => true
-            },
-        )
-        return result
-    }
-}
-
-public class LogWriterConfig <: Serializable<LogWriterConfig> {
-    public LogWriterConfig(
-        public let writerClass: String,
-        public let writerName: String,
-        public let properties: HashMap<String, String>
-    ) {
-    }
-
-    public func serialize(): DataModel {
-        let dms = DataModelStruct().add(field("writerClass", writerClass)).add(field("writerName", writerName))
-        ifSome(properties) {
-            property => property |> forEach<(String, String)> {
-                p => dms.add(field(p[0], p[1]))
+            match (dms.get("converters")) {
+                case data: DataModelSeq => ArrayList<ConverterConfig>.deserialize(data)
+                case _ => ArrayList<ConverterConfig>()
             }
-        }
-        return dms
-    }
-
-    public static func deserialize(dm: DataModel): LogWriterConfig {
-        let dms = match (dm) {
-            case data: DataModelStruct => data
-            case _ => throw Exception("this data is not DataModelStruct")
-        }
-        let result = LogWriterConfig(
-            get(dms, "writerClass", "日志配置异常,writerClass未设置"),
-            get(dms, "writerName", "日志配置异常,writerName未设置"),
-            getProperties(dms, "writerClass", "writerName")
         )
         return result
     }

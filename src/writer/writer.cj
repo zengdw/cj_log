@@ -1,9 +1,36 @@
 package cj_log_framework.writer
 
 import log.LogRecord
-import std.collection.HashMap
-import cj_log_framework.config.LogWriterConfig
-import std.reflect.TypeInfo
+import std.collection.{ArrayList, HashMap}
+import std.reflect.{TypeInfo, ClassTypeInfo}
+import cj_log_framework.config.{LogWriterConfig}
+
+let CACHE_WRITER_MAP: HashMap<String, Writer> = HashMap()
+
+public func getWriterArray() {
+    CACHE_WRITER_MAP.values().toArray()
+}
+
+public func getWriter(writerName: String) {
+    CACHE_WRITER_MAP.get(writerName)
+}
+
+public func createWriters(writerConfigs: ArrayList<LogWriterConfig>) {
+    for (w in writerConfigs) {
+        let ti = TypeInfo.get(w.writerClass)
+        let cti = match (ti as ClassTypeInfo) {
+            case Some(cti) => cti
+            case None => throw Exception("${w.writerClass} is not a class type")
+        }
+        let buildFun = cti.getInstanceFunction("build", TypeInfo.of<LogWriterConfig>())
+        let writer = match (cti.construct() as AbstractWriter) {
+            case Some(writer) => writer
+            case None => throw Exception("${w.writerClass} is not a subclass of cj_log_framework.writer.AbstractWriter")
+        }
+        buildFun.apply(writer, w)
+        CACHE_WRITER_MAP.add(w.writerName, writer)
+    }
+}
 
 public interface Writer {
     func write(record: LogRecord): Unit
@@ -11,31 +38,4 @@ public interface Writer {
     func close(): Unit
 
     func build(c: LogWriterConfig): Unit
-}
-
-public abstract class AbstractWriter <: Writer {
-    let DEFAULT_PATTERN: String = "%{d(yyyy-MM-dd HH:mm:ss)} -%{5p} %{logger}:%{line} %{msg}"
-    var pattern: ?String = None
-
-    public func logFormat(record: LogRecord): String {
-        let time = record.time.format("yyyy-MM-dd HH:mm:ss")
-        let level = record.level.toString()
-        let attrMap = HashMap<String, String>()
-        for (attr in record.attrs) {
-            attrMap.add(
-                attr[0],
-                match (attr[1]) {
-                    case s: String => s
-                    case i: Int64 => i.toString()
-                    case _ => ""
-                }
-            )
-        }
-        let loggerName = attrMap.get("logger") ?? ""
-        let line = attrMap.get("line") ?? ""
-        let message = "${time} -${level} ${loggerName}:${line} : ${record.message} \n"
-        return message
-    }
-
-    public func write(record: LogRecord): Unit 
 }
