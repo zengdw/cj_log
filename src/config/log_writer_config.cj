@@ -4,12 +4,14 @@ public class LogWriterConfig <: Serializable<LogWriterConfig> {
     public LogWriterConfig(
         public let writerClass: String,
         public let writerName: String,
+        public var pattern: ?String,
         public let properties: HashMap<String, String>
     ) {
     }
 
     public func serialize(): DataModel {
         let dms = DataModelStruct().add(field("writerClass", writerClass)).add(field("writerName", writerName))
+        .add(field("pattern", pattern))
         ifSome(properties) {
             property => property |> forEach<(String, String)> {
                 p => dms.add(field(p[0], p[1]))
@@ -26,7 +28,8 @@ public class LogWriterConfig <: Serializable<LogWriterConfig> {
         let result = LogWriterConfig(
             get(dms, "writerClass", "日志配置异常,writerClass未设置"),
             get(dms, "writerName", "日志配置异常,writerName未设置"),
-            getProperties(dms, "writerClass", "writerName")
+            get(dms, "pattern"),
+            getProperties(dms, "writerClass", "writerName", "pattern")
         )
         return result
     }

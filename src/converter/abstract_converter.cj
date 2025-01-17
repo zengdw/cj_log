@@ -1,6 +1,6 @@
 package cj_log.converter
 
-abstract class AbstactConverter <: Converter {
+public abstract class AbstactConverter <: Converter {
     private let optionList: ArrayList<String> = ArrayList()
 
     public func getFirstOption() {

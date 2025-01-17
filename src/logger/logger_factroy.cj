@@ -15,7 +15,7 @@ class LogLauncher {
         converterConfigHandle(logConfig.converters)
         LoggerFactroy.level = logConfig.level
         LoggerFactroy.loggers = logConfig.loggers
-        createWriters(logConfig.writers)
+        createWriters(logConfig.writers, logConfig.pattern)
     }
 }
 

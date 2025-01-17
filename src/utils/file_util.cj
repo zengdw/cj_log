@@ -14,8 +14,8 @@ import cj_log.config.LogWriterConfig
 protected func readSettingFile(filePath: String): LogConfig {
     if (!exists(filePath)) {
         let writers = ArrayList<LogWriterConfig>()
-        writers.add(LogWriterConfig("cj_log.writer.ConsoleWriter", "consoleWriter", HashMap<String, String>()))
-        return LogConfig("INFO", writers, ArrayList(), ArrayList())
+        writers.add(LogWriterConfig("cj_log.writer.ConsoleWriter", "consoleWriter", None, HashMap<String, String>()))
+        return LogConfig("INFO", writers, ArrayList(), ArrayList(), None)
     }
     let allBytes = File.readFrom(filePath)
     let setting = String.fromUtf8(allBytes)

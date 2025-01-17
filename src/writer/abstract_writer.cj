@@ -8,7 +8,7 @@ import cj_log.converter.createConverter
 public abstract class AbstractWriter <: Writer {
     let DEFAULT_PATTERN: String = "%{d(yyyy-MM-dd HH:mm:ss)} -%{5p} %{logger}:%{line} %{msg}"
     var pattern: ?String = None
-    let r = Regex(#"%\{(\d*)([a-z]+)(?:\(([^)]*)\))?\}"#)
+    let r = Regex(#"%\{(\d*)([a-zA-Z0-9_]+)(?:\(([^)]*)\))?\}"#)
 
     public func logFormat(record: LogRecord): String {
         var p = pattern ?? DEFAULT_PATTERN
@@ -25,7 +25,7 @@ public abstract class AbstractWriter <: Writer {
                 }
                 let fragment = md.matchStr()
                 let converter = createConverter(md.matchStr(2), fragment, optionList)
-                let str = converter?.convert(record) ?? fragment
+                let str = converter.convert(record)
                 p = p.replace(fragment, str)
             }
             return p + "\n"

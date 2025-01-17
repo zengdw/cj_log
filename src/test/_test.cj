@@ -4,19 +4,8 @@ import cj_log.macros.{LoggerFactroy, Log}
 import std.regex.Regex
 import std.unittest.testmacro.{Test, Tag}
 
-@Log
-class User {
-    public func getName() {
-        log.info("getName")
-    }
-}
 @Test
-func clssLog() {
-    let user = User()
-    user.getName()
-}
-
-@Test
+@Tag[logTest]
 @Log
 func logTest() {
     log.info("logTest")
@@ -39,4 +28,14 @@ func patternTest() {
             }
         }
     }
+}
+
+/**
+ * 测试日志自定义属性
+ */
+@Test
+@Tag[testProp]
+@Log
+func testProp() {
+    log.info("testProp", ("testProp", "testProp"))
 }

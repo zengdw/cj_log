@@ -15,7 +15,7 @@ public func getWriter(writerName: String) {
     CACHE_WRITER_MAP.get(writerName)
 }
 
-public func createWriters(writerConfigs: ArrayList<LogWriterConfig>) {
+public func createWriters(writerConfigs: ArrayList<LogWriterConfig>, pattern: ?String) {
     for (w in writerConfigs) {
         let ti = TypeInfo.get(w.writerClass)
         let cti = match (ti as ClassTypeInfo) {
@@ -26,6 +26,9 @@ public func createWriters(writerConfigs: ArrayList<LogWriterConfig>) {
         let writer = match (cti.construct() as AbstractWriter) {
             case Some(writer) => writer
             case None => throw Exception("${w.writerClass} is not a subclass of cj_log.writer.AbstractWriter")
+        }
+        ifNone(w.pattern) {
+            w.pattern = pattern
         }
         buildFun.apply(writer, w)
         CACHE_WRITER_MAP.add(w.writerName, writer)

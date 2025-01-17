@@ -27,7 +27,7 @@ public class FileWriter <: AbstractWriter {
     public func build(c: LogWriterConfig): Unit {
         fileName = c.properties.get("fileName")
         filePath = c.properties.get("filePath")
-        pattern = c.properties.get("pattern")
+        pattern = c.pattern
 
         var path = match (filePath) {
             case Some(v) => v

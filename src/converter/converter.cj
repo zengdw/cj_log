@@ -7,7 +7,7 @@ import cj_log.config.ConverterConfig
 
 private let DEFAULT_CONVERTER_MAP = HashMap<String, String>()
 public let CONVERTER_MAP: HashMap<String, String> = DEFAULT_CONVERTER_MAP
-public let CONVERTER_CLASS_MAP: HashMap<String, Converter> = HashMap()
+public let CONVERTER_CLASS_MAP: HashMap<String, AbstactConverter> = HashMap()
 
 func initDefaultConverterMap() {
     DEFAULT_CONVERTER_MAP.add("d", "cj_log.converter.DateConverter")
@@ -27,7 +27,7 @@ public func converterConfigHandle(converterConfigs: ArrayList<ConverterConfig>) 
     }
 }
 
-public func createConverter(key: String, fragment: String, optionList: ArrayList<String>) {
+public func createConverter(key: String, fragment: String, optionList: ArrayList<String>): AbstactConverter {
     if (let Some(c) <- CONVERTER_CLASS_MAP.get(fragment)) {
         return c
     }
@@ -44,7 +44,9 @@ public func createConverter(key: String, fragment: String, optionList: ArrayList
         CONVERTER_CLASS_MAP.add(fragment, converter)
         return converter
     }
-    return Option<Converter>.None
+    let defaultConverter = DefaultConverter(key)
+    CONVERTER_CLASS_MAP.add(fragment, defaultConverter)
+    return defaultConverter
 }
 
 public interface Converter {
