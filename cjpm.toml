@@ -1,11 +1,11 @@
 [dependencies]
 
 [package]
-  cjc-version = "0.57.3"
+  cjc-version = "0.58.3"
   compile-option = ""
   description = "nothing here"
   link-option = ""
-  name = "cj_log_framework"
+  name = "cj_log"
   output-type = "static"
   override-compile-option = ""
   src-dir = ""

@@ -1,6 +1,6 @@
-package cj_log_framework.test
+package cj_log.test
 
-import cj_log_framework.macros.{LoggerFactroy, Log}
+import cj_log.macros.{LoggerFactroy, Log}
 import std.regex.Regex
 import std.unittest.testmacro.{Test, Tag}
 
@@ -10,17 +10,16 @@ class User {
         log.info("getName")
     }
 }
+@Test
+func clssLog() {
+    let user = User()
+    user.getName()
+}
 
 @Test
 @Log
 func logTest() {
     log.info("logTest")
-}
-
-@Test
-func clssLog() {
-    let user = User()
-    user.getName()
 }
 
 @Test

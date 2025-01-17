@@ -1,4 +1,4 @@
-package cj_log_framework.config
+package cj_log.config
 
 public class LogWriterConfig <: Serializable<LogWriterConfig> {
     public LogWriterConfig(

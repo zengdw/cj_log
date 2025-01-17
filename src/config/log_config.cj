@@ -1,4 +1,4 @@
-package cj_log_framework.config
+package cj_log.config
 
 internal import log.LogLevel
 internal import std.collection.{ArrayList, HashMap, forEach, filter}

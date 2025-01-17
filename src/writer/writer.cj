@@ -1,9 +1,9 @@
-package cj_log_framework.writer
+package cj_log.writer
 
 import log.LogRecord
 import std.collection.{ArrayList, HashMap}
 import std.reflect.{TypeInfo, ClassTypeInfo}
-import cj_log_framework.config.{LogWriterConfig}
+import cj_log.config.{LogWriterConfig}
 
 let CACHE_WRITER_MAP: HashMap<String, Writer> = HashMap()
 
@@ -25,7 +25,7 @@ public func createWriters(writerConfigs: ArrayList<LogWriterConfig>) {
         let buildFun = cti.getInstanceFunction("build", TypeInfo.of<LogWriterConfig>())
         let writer = match (cti.construct() as AbstractWriter) {
             case Some(writer) => writer
-            case None => throw Exception("${w.writerClass} is not a subclass of cj_log_framework.writer.AbstractWriter")
+            case None => throw Exception("${w.writerClass} is not a subclass of cj_log.writer.AbstractWriter")
         }
         buildFun.apply(writer, w)
         CACHE_WRITER_MAP.add(w.writerName, writer)

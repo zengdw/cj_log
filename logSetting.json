@@ -2,20 +2,20 @@
   "level": "DEBUG",
   "writers": [
     {
-      "writerClass": "cj_log_framework.writer.FileWriter",
+      "writerClass": "cj_log.writer.FileWriter",
       "filePath": "./log",
       "fileName": "out.log",
       "writerName": "fileWriter"
     },
     {
-      "writerClass": "cj_log_framework.writer.ConsoleWriter",
+      "writerClass": "cj_log.writer.ConsoleWriter",
       "writerName": "consoleWriter"
     }
   ],
   "loggers": [],
   "converter": [
     {
-      "converterClass": "cj_log_framework.converter.DefaultConverter",
+      "converterClass": "cj_log.converter.DefaultConverter",
       "converterKey": "defaultConverter"
     }
   ]

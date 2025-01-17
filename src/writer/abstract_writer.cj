@@ -1,9 +1,9 @@
-package cj_log_framework.writer
+package cj_log.writer
 
 import std.regex.{Regex, Matcher}
 import std.collection.{HashMap, ArrayList}
 import log.LogRecord
-import cj_log_framework.converter.createConverter
+import cj_log.converter.createConverter
 
 public abstract class AbstractWriter <: Writer {
     let DEFAULT_PATTERN: String = "%{d(yyyy-MM-dd HH:mm:ss)} -%{5p} %{logger}:%{line} %{msg}"

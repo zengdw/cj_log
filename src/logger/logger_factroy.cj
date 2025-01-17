@@ -1,11 +1,11 @@
-package cj_log_framework.logger
+package cj_log.logger
 
 import log.{Logger, LogLevel}
 import std.collection.{ArrayList, HashMap}
-import cj_log_framework.writer.{Writer, getWriterArray, getWriter, createWriters}
-import cj_log_framework.config.LoggerConfig
-import cj_log_framework.utils.readSettingFile
-import cj_log_framework.converter.converterConfigHandle
+import cj_log.writer.{Writer, getWriterArray, getWriter, createWriters}
+import cj_log.config.LoggerConfig
+import cj_log.utils.readSettingFile
+import cj_log.converter.converterConfigHandle
 
 class LogLauncher {
     private static var logSettingPath = './logSetting.json'

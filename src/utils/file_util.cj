@@ -1,11 +1,11 @@
-package cj_log_framework.utils
+package cj_log.utils
 
 import std.fs.{File, exists, OpenMode}
 import encoding.json.{JsonValue, ToJson}
-import cj_log_framework.config.LogConfig
+import cj_log.config.LogConfig
 import serialization.serialization.DataModel
 import std.collection.{ArrayList, HashMap}
-import cj_log_framework.config.LogWriterConfig
+import cj_log.config.LogWriterConfig
 
 /**
  * 读取日志配置文件
@@ -14,7 +14,7 @@ import cj_log_framework.config.LogWriterConfig
 protected func readSettingFile(filePath: String): LogConfig {
     if (!exists(filePath)) {
         let writers = ArrayList<LogWriterConfig>()
-        writers.add(LogWriterConfig("cj_log_framework.writer.ConsoleWriter", "consoleWriter", HashMap<String, String>()))
+        writers.add(LogWriterConfig("cj_log.writer.ConsoleWriter", "consoleWriter", HashMap<String, String>()))
         return LogConfig("INFO", writers, ArrayList(), ArrayList())
     }
     let allBytes = File.readFrom(filePath)

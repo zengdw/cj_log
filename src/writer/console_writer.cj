@@ -1,11 +1,11 @@
-package cj_log_framework.writer
+package cj_log.writer
 
 import std.io.{OutputStream}
 import log.LogRecord
 import std.console.Console
 import std.collection.HashMap
 import log.{LogValue, Attr}
-import cj_log_framework.config.LogWriterConfig
+import cj_log.config.LogWriterConfig
 import std.reflect.TypeInfo
 
 public class ConsoleWriter <: AbstractWriter {

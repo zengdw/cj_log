@@ -1,4 +1,4 @@
-package cj_log_framework.converter
+package cj_log.converter
 
 public class DateConverter <: AbstactConverter {
 

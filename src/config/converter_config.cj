@@ -1,4 +1,4 @@
-package cj_log_framework.config
+package cj_log.config
 
 public class ConverterConfig <: Serializable<ConverterConfig> {
     private var _converterKey: String

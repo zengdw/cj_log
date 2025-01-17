@@ -1,4 +1,4 @@
-package cj_log_framework.logger
+package cj_log.logger
 
 import log.Logger
 import std.io.{BufferedOutputStream, OutputStream}
@@ -6,7 +6,7 @@ import log.{LogLevel, Attr, LogRecord}
 import std.time.DateTime
 import std.collection.ArrayList
 import std.sync.AtomicBool
-import cj_log_framework.writer.Writer
+import cj_log.writer.Writer
 
 public class BaseLogger <: Logger {
     var writers: Array<Writer>

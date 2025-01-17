@@ -1,23 +1,23 @@
-package cj_log_framework.converter
+package cj_log.converter
 
 internal import log.LogRecord
 internal import std.collection.{ArrayList, HashMap}
 import std.reflect.{TypeInfo, ClassTypeInfo}
-import cj_log_framework.config.ConverterConfig
+import cj_log.config.ConverterConfig
 
 private let DEFAULT_CONVERTER_MAP = HashMap<String, String>()
 public let CONVERTER_MAP: HashMap<String, String> = DEFAULT_CONVERTER_MAP
 public let CONVERTER_CLASS_MAP: HashMap<String, Converter> = HashMap()
 
 func initDefaultConverterMap() {
-    DEFAULT_CONVERTER_MAP.add("d", "cj_log_framework.converter.DateConverter")
-    DEFAULT_CONVERTER_MAP.add("date", "cj_log_framework.converter.DateConverter")
-    DEFAULT_CONVERTER_MAP.add("p", "cj_log_framework.converter.LevelConverter")
-    DEFAULT_CONVERTER_MAP.add("level", "cj_log_framework.converter.LevelConverter")
-    DEFAULT_CONVERTER_MAP.add("logger", "cj_log_framework.converter.LoggerConverter")
-    DEFAULT_CONVERTER_MAP.add("msg", "cj_log_framework.converter.MsgConverter")
-    DEFAULT_CONVERTER_MAP.add("m", "cj_log_framework.converter.MsgConverter")
-    DEFAULT_CONVERTER_MAP.add("line", "cj_log_framework.converter.LineConverter")
+    DEFAULT_CONVERTER_MAP.add("d", "cj_log.converter.DateConverter")
+    DEFAULT_CONVERTER_MAP.add("date", "cj_log.converter.DateConverter")
+    DEFAULT_CONVERTER_MAP.add("p", "cj_log.converter.LevelConverter")
+    DEFAULT_CONVERTER_MAP.add("level", "cj_log.converter.LevelConverter")
+    DEFAULT_CONVERTER_MAP.add("logger", "cj_log.converter.LoggerConverter")
+    DEFAULT_CONVERTER_MAP.add("msg", "cj_log.converter.MsgConverter")
+    DEFAULT_CONVERTER_MAP.add("m", "cj_log.converter.MsgConverter")
+    DEFAULT_CONVERTER_MAP.add("line", "cj_log.converter.LineConverter")
 }
 
 public func converterConfigHandle(converterConfigs: ArrayList<ConverterConfig>) {
@@ -38,7 +38,7 @@ public func createConverter(key: String, fragment: String, optionList: ArrayList
         }
         let converter = match (cti.construct() as AbstactConverter) {
             case Some(converter) => converter
-            case None => throw Exception("${classPath} is not a subclass of cj_log_framework.converter.AbstactConverter")
+            case None => throw Exception("${classPath} is not a subclass of cj_log.converter.AbstactConverter")
         }
         converter.addOption(optionList)
         CONVERTER_CLASS_MAP.add(fragment, converter)

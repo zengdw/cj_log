@@ -1,9 +1,9 @@
-package cj_log_framework.writer
+package cj_log.writer
 
 import log.LogRecord
 import std.collection.HashMap
 import std.fs.{File, OpenMode, exists, Directory}
-import cj_log_framework.config.LogWriterConfig
+import cj_log.config.LogWriterConfig
 
 public class FileWriter <: AbstractWriter {
     var f: ?File = None

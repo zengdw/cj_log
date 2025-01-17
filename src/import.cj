@@ -1,1 +1,1 @@
-package cj_log_framework
+package cj_log
