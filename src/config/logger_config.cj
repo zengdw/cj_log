@@ -36,7 +36,7 @@ public class LoggerConfig <: Serializable<LoggerConfig> {
         let result = LoggerConfig(
             get(dms, "level"),
             get(dms, "loggerName", "日志设置异常,loggerName未设置"),
-            get(dms, "loggerClass", "日志设置异常,loggerClass未设置"),
+            get(dms, "loggerClass").getOrDefault {"cj_log.logger.BaseLogger"},
             match (dms.get("writerNames")) {
                 case data: DataModelSeq => ArrayList.deserialize(data)
                 case _ => ArrayList()

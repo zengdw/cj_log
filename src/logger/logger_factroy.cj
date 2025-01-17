@@ -7,18 +7,6 @@ import cj_log.config.LoggerConfig
 import cj_log.utils.readSettingFile
 import cj_log.converter.converterConfigHandle
 
-class LogLauncher {
-    private static var logSettingPath = './logSetting.json'
-
-    static init() {
-        let logConfig = readSettingFile(logSettingPath)
-        converterConfigHandle(logConfig.converters)
-        LoggerFactroy.level = logConfig.level
-        LoggerFactroy.loggers = logConfig.loggers
-        createWriters(logConfig.writers, logConfig.pattern)
-    }
-}
-
 public class LoggerFactroy {
     public static var level = LogLevel.INFO
     public static var loggers: ArrayList<LoggerConfig> = ArrayList()
@@ -85,11 +73,23 @@ public class LoggerFactroy {
     static func findParentLoggerConfig(name: String): Option<LoggerConfig> {
         var loggerConfig: ?LoggerConfig = None
         for (l in loggers) {
-            if (name.startsWith(l.loggerName)) {
+            if (name.startsWith(l.loggerName) && name != l.loggerName) {
                 loggerConfig = l
                 break
             }
         }
         return loggerConfig
+    }
+}
+
+class LogLauncher {
+    private static var logSettingPath = './logSetting.json'
+
+    static init() {
+        let logConfig = readSettingFile(logSettingPath)
+        converterConfigHandle(logConfig.converters)
+        LoggerFactroy.level = logConfig.level
+        LoggerFactroy.loggers = logConfig.loggers
+        createWriters(logConfig.writers, logConfig.pattern)
     }
 }

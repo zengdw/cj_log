@@ -1,5 +1,5 @@
 {
-  "level": "DEBUG",
+  "level": "INFO",
   "pattern": "%{d(yyyy-MM-dd HH:mm:ss)} -%{5p} %{testProp} %{logger}:%{line} %{msg}",
   "writers": [
     {
@@ -13,11 +13,11 @@
       "writerName": "consoleWriter"
     }
   ],
-  "loggers": [],
-  "converter": [
+  "loggers": [
     {
-      "converterClass": "cj_log.converter.DefaultConverter",
-      "converterKey": "defaultConverter"
+      "level": "DEBUG",
+      "loggerName": "cj_log.test.p"
     }
-  ]
+  ],
+  "converter": []
 }
