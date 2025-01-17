@@ -1,8 +1,7 @@
 package cj_log.logger
 
-import log.Logger
 import std.io.{BufferedOutputStream, OutputStream}
-import log.{LogLevel, Attr, LogRecord}
+import log.{LogLevel, Attr, LogRecord, Logger}
 import std.time.DateTime
 import std.collection.ArrayList
 import std.sync.AtomicBool

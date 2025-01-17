@@ -2,6 +2,7 @@ package cj_log.test
 
 import std.regex.Regex
 import std.unittest.testmacro.{Test, Tag}
+import std.collection.ArrayList
 import cj_log.macros.{LoggerFactroy, Log}
 
 @Test
@@ -30,5 +31,5 @@ func patternTest() {
 @Tag[testProp]
 @Log
 func testProp() {
-    log.debug("testProp", ("testProp", "testProp"))
+    log.info("testProp", ("testProp", "testProp"))
 }

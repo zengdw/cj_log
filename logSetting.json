@@ -6,7 +6,10 @@
       "writerClass": "cj_log.writer.FileWriter",
       "filePath": "./log",
       "fileName": "out.log",
-      "writerName": "fileWriter"
+      "writerName": "fileWriter",
+      "maxFileSize": "20",
+      "maxFileCount": "10",
+      "maxTime": "7"
     },
     {
       "writerClass": "cj_log.writer.ConsoleWriter",

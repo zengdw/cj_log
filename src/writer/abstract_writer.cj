@@ -34,6 +34,4 @@ public abstract class AbstractWriter <: Writer {
             return ""
         }
     }
-
-    public func write(record: LogRecord): Unit
 }

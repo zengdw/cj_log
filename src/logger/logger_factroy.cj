@@ -19,7 +19,6 @@ public class LoggerFactroy {
             var logger: Logger
             match (loggerConfig) {
                 case Some(l) =>
-                    // TODO: 动态创建logger
                     logger = BaseLogger(getWriters(l))
                     logger.withAttrs(("logger", name))
                     logger.level = getLevel(l)
@@ -65,7 +64,7 @@ public class LoggerFactroy {
                         case None => level
                     }
                 } else {
-                    LogLevel.INFO
+                    level
                 }
         }
     }
