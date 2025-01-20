@@ -1,8 +1,6 @@
 package cj_log.writer
 
-import std.regex.{Regex, Matcher}
-import std.collection.{HashMap, ArrayList}
-import log.LogRecord
+internal import std.regex.{Regex, Matcher}
 import cj_log.converter.createConverter
 
 public abstract class AbstractWriter <: Writer {

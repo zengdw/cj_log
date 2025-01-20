@@ -1,9 +1,9 @@
 package cj_log.writer
 
-import log.LogRecord
-import std.collection.{ArrayList, HashMap}
+internal import log.LogRecord
+internal import std.collection.{ArrayList, HashMap}
 import std.reflect.{TypeInfo, ClassTypeInfo}
-import cj_log.config.{LogWriterConfig}
+internal import cj_log.config.{LogWriterConfig}
 
 let CACHE_WRITER_MAP: HashMap<String, Writer> = HashMap()
 
@@ -40,5 +40,5 @@ public interface Writer {
 
     func close(): Unit
 
-    func build(c: LogWriterConfig): Unit
+    func build(config: LogWriterConfig): Unit
 }

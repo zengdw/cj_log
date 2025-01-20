@@ -4,12 +4,15 @@
   "writers": [
     {
       "writerClass": "cj_log.writer.FileWriter",
-      "filePath": "./log",
-      "fileName": "out.log",
-      "writerName": "fileWriter",
+      "file": "./log/out.log",
+      "writerName": "fileWriter"
+    },
+    {
+      "writerClass": "cj_log.writer.RollingFileWriter",
+      "file": "./log/rolling.log",
+      "writerName": "rollingFileWriter",
       "maxFileSize": "20",
-      "maxFileCount": "10",
-      "maxTime": "7"
+      "maxHistory": "1"
     },
     {
       "writerClass": "cj_log.writer.ConsoleWriter",
@@ -22,5 +25,10 @@
       "loggerName": "cj_log.test.p"
     }
   ],
-  "converter": []
+  "converter": [
+    {
+      "converterKey": "",
+      "converterClass": ""
+    }
+  ]
 }

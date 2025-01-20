@@ -7,6 +7,8 @@ public class LoggerConfig <: Serializable<LoggerConfig> {
         level: ?String,
         public let loggerName: String,
         public let writerNames: ArrayList<String>,
+        public let properties: HashMap<String, String>,
+        public let loggerClass: ?String,
         public let additivity!: Bool = true
     ) {
         this.level = match (level) {
@@ -20,6 +22,8 @@ public class LoggerConfig <: Serializable<LoggerConfig> {
             .add(field("level", level?.name))
             .add(field("loggerName", loggerName))
             .add(field("writerNames", writerNames))
+            .add(field("properties", properties))
+            .add(field("loggerClass", loggerClass))
             .add(field("additivity", additivity))
     }
 
@@ -35,6 +39,8 @@ public class LoggerConfig <: Serializable<LoggerConfig> {
                 case data: DataModelSeq => ArrayList.deserialize(data)
                 case _ => ArrayList()
             },
+            getProperties(dms, "level", "loggerName", "writerNames", "loggerClass", "additivity"),
+            get(dms, "loggerClass"),
             additivity: match (dms.get("additivity")) {
                 case data: DataModelBool => Bool.deserialize(data)
                 case _ => true

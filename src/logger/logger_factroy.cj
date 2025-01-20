@@ -2,6 +2,8 @@ package cj_log.logger
 
 import log.{Logger, LogLevel}
 import std.collection.{ArrayList, HashMap}
+import std.reflect.{TypeInfo, ClassTypeInfo}
+import std.sync.ReentrantMutex
 import cj_log.writer.{Writer, getWriterArray, getWriter, createWriters}
 import cj_log.config.LoggerConfig
 import cj_log.utils.readSettingFile
@@ -11,25 +13,43 @@ public class LoggerFactroy {
     public static var level = LogLevel.INFO
     public static var loggers: ArrayList<LoggerConfig> = ArrayList()
     public static let cacheLoggers: HashMap<String, Logger> = HashMap() /* cjlint-ignore !G.NAM.05*/
-    
+
+    static let MTX = ReentrantMutex()
+
     public static func createLogger(name: String): Logger {
-        var cacheLogger = cacheLoggers.get(name)
-        return cacheLogger.getOrDefault {
-            let loggerConfig = findParentLoggerConfig(name)
-            var logger: Logger
-            match (loggerConfig) {
-                case Some(l) =>
-                    logger = BaseLogger(getWriters(l))
-                    logger.withAttrs(("logger", name))
-                    logger.level = getLevel(l)
-                case None =>
-                    logger = BaseLogger(getWriterArray())
-                    logger.withAttrs(("logger", name))
-                    logger.level = level
+        synchronized(MTX) {
+            var cacheLogger = cacheLoggers.get(name)
+            return cacheLogger.getOrDefault {
+                let loggerConfig = findParentLoggerConfig(name)
+                var logger: AbstractLogger
+                match (loggerConfig) {
+                    case Some(l) =>
+                        logger = buildLogger(l.loggerClass)
+                        logger.build(getLevel(l), getWriters(l), [("logger", name)], l.properties)
+                    case None =>
+                        logger = DefaultLogger()
+                        logger.build(level, getWriterArray(), [("logger", name)], HashMap())
+                }
+                cacheLoggers.add(name, logger)
+                return logger
             }
-            cacheLoggers.add(name, logger)
+        }
+    }
+
+    private static func buildLogger(loggerClass: ?String) {
+        if (let Some(lc) <- loggerClass) {
+            let ti = TypeInfo.get(lc)
+            let cti = match (ti as ClassTypeInfo) {
+                case Some(cti) => cti
+                case None => throw Exception("${lc} is not a class type")
+            }
+            let logger = match (cti.construct() as AbstractLogger) {
+                case Some(logger) => logger
+                case None => throw Exception("${lc} is not a subclass of cj_log.writer.AbstractWriter")
+            }
             return logger
         }
+        DefaultLogger()
     }
 
     static func getWriters(l: LoggerConfig): Array<Writer> {
