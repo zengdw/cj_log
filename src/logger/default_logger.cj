@@ -11,9 +11,8 @@ public class DefaultLogger <: AbstractLogger {
     }
 
     public func log(record: LogRecord): Unit {
+        super.log(record)
         if (!isClosed()) {
-            let attrs = attrs.toArray().concat(record.attrs)
-            record.attrs = attrs
             for (w in writers) {
                 w.write(record)
             }

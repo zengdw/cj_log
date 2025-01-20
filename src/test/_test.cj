@@ -4,6 +4,7 @@ import std.regex.Regex
 import std.unittest.testmacro.{Test, Tag}
 import std.collection.ArrayList
 import cj_log.macros.{LoggerFactroy, Log}
+import cj_log.utils.MDC
 
 @Test
 @Tag[patternTest]
@@ -32,4 +33,14 @@ func patternTest() {
 @Log
 func testProp() {
     log.info("testProp", ("testProp", "testProp"))
+}
+
+
+@Test
+@Tag[mdcTest]
+@Log
+func mdcTest() {
+    MDC.put("testProp", "123")
+    log.info("testProp")
+    log.info("testProp222")
 }

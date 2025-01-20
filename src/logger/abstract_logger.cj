@@ -6,6 +6,7 @@ internal import std.sync.AtomicBool
 internal import std.time.DateTime
 internal import cj_log.writer.Writer
 internal import cj_log.config.LoggerConfig
+import cj_log.utils.MDC
 
 public abstract class AbstractLogger <: Logger {
     private var _writers = Array<Writer>()
@@ -75,6 +76,20 @@ public abstract class AbstractLogger <: Logger {
         if (this.enabled(level)) {
             let record: LogRecord = LogRecord(DateTime.now(), level, message(), attrs)
             log(record)
+        }
+    }
+
+    public open func log(record: LogRecord): Unit {
+        if (!isClosed()) {
+            let localMap = MDC.localMap()
+            let localMapArr = Array<Attr>(localMap.size, repeat: ('', ''))
+            var i = 0
+            for ((k, v) in MDC.localMap()) {
+                localMapArr[i] = (k, v)
+                i += 1
+            }
+            var attrs = attrs.toArray().concat(record.attrs).concat(localMapArr)
+            record.attrs = attrs
         }
     }
 }
