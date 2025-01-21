@@ -47,6 +47,7 @@ cj_log是一个简单易用的仓颉日志框架,用于方便打印仓颉项目�
     {
       "writerClass": "cj_log.writer.FileWriter",
       "writerName": "fileWriter",
+      "pattern": "%{d(yyyy-MM-dd HH:mm:ss)} -%{5p} %{logger}:%{line} %{msg}",
       "file": "./log/out.log"   // 输出日志文件路径
     },
     {
@@ -77,7 +78,7 @@ cj_log是一个简单易用的仓颉日志框架,用于方便打印仓颉项目�
 }
 ```
 - `level`: 日志打印级别,支持所有日志级别配置
-- `pattern`: 日志输出格式设置. 现默认实现的转换器有:
+- `pattern`: 全局日志输出格式设置. 现默认实现的转换器有:
   - `%{d(yyyy-MM-dd HH:mm:ss)}`: 日期格式化.括号里面填写正确的日期时间格式化规则
   - `%{5p}`: 日志级别.前面数字(5)代表日志级别长度,正数表示前面添加空格( INFO),负数表示后面添加空格(INFO )
   - `%{logger}`: 日志所属文件名
@@ -86,6 +87,7 @@ cj_log是一个简单易用的仓颉日志框架,用于方便打印仓颉项目�
 - `writers`: 日志输出方式配置
   - `writerClass`: writer类名
   - `writerName`: writer名称
+  - `pattern`: 日志输出格式设置
   - 其余属性是特定于writerClass的
 - `loggers`: logger配置
   - `level`: 当前logger的日志级别.未配置时`additivity=true`获取父logger的配置
