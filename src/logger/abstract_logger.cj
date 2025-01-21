@@ -88,7 +88,7 @@ public abstract class AbstractLogger <: Logger {
                 localMapArr[i] = (k, v)
                 i += 1
             }
-            var attrs = attrs.toArray().concat(record.attrs).concat(localMapArr)
+            var attrs = attrs.toArray().concat(localMapArr).concat(record.attrs)
             record.attrs = attrs
         }
     }

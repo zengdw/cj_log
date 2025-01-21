@@ -1,6 +1,6 @@
 package cj_log.converter
 
-public class LineConverter <: AbstactConverter {
+public class LineConverter <: AbstractConverter {
     public func convert(record: LogRecord): String {
         var line: String = ""
         for (attr in record.attrs) {

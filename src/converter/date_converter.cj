@@ -1,6 +1,6 @@
 package cj_log.converter
 
-public class DateConverter <: AbstactConverter {
+public class DateConverter <: AbstractConverter {
 
   public func convert(record: LogRecord): String {
     let time = record.time

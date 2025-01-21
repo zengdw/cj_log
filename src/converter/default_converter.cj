@@ -1,6 +1,6 @@
 package cj_log.converter
 
-public class DefaultConverter <: AbstactConverter {
+public class DefaultConverter <: AbstractConverter {
     private var propName: String
 
     public init(propName: String) {

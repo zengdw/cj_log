@@ -1,18 +1,11 @@
 {
   "level": "INFO",
-  "pattern": "%{d(yyyy-MM-dd HH:mm:ss)} -%{5p} %{testProp} %{logger}:%{line} %{msg}",
+  "pattern": "%{d(yyyy-MM-dd HH:mm:ss)} -%{5p} %{logger}:%{line} %{msg}",
   "writers": [
     {
       "writerClass": "cj_log.writer.FileWriter",
       "file": "./log/out.log",
       "writerName": "fileWriter"
-    },
-    {
-      "writerClass": "cj_log.writer.RollingFileWriter",
-      "file": "./log/rolling.log",
-      "writerName": "rollingFileWriter",
-      "maxFileSize": "20",
-      "maxHistory": "1"
     },
     {
       "writerClass": "cj_log.writer.ConsoleWriter",

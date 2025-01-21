@@ -2,7 +2,7 @@ package cj_log.converter
 
 import std.convert.Parsable
 
-public class LoggerConverter <: AbstactConverter {
+public class LoggerConverter <: AbstractConverter {
     public func convert(record: LogRecord) {
         var logger: String = ""
         for (attr in record.attrs) {

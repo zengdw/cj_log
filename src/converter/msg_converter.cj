@@ -1,6 +1,6 @@
 package cj_log.converter
 
-public class MsgConverter <: AbstactConverter {
+public class MsgConverter <: AbstractConverter {
   public func convert(record: LogRecord): String {
     return record.message
   }
