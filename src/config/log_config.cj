@@ -13,7 +13,8 @@ public class LogConfig <: Serializable<LogConfig> {
         public let writers: ArrayList<LogWriterConfig>,
         public let loggers: ArrayList<LoggerConfig>,
         public let converters: ArrayList<ConverterConfig>,
-        public let pattern: ?String
+        public let pattern: ?String,
+        public let writerNames: ArrayList<String>
     ) {
         this.level = logLevel(level)
     }
@@ -25,6 +26,7 @@ public class LogConfig <: Serializable<LogConfig> {
             .add(field("loggers", loggers))
             .add(field("converters", converters))
             .add(field("pattern", pattern))
+            .add(field("writerNames", writerNames))
     }
 
     public static func deserialize(dm: DataModel): LogConfig {
@@ -46,7 +48,11 @@ public class LogConfig <: Serializable<LogConfig> {
                 case data: DataModelSeq => ArrayList<ConverterConfig>.deserialize(data)
                 case _ => ArrayList<ConverterConfig>()
             },
-            get(dms, "pattern")
+            get(dms, "pattern"),
+            match (dms.get("writerNames")) {
+                case data: DataModelSeq => ArrayList<String>.deserialize(data)
+                case _ => ArrayList<String>()
+            },
         )
         return result
     }
