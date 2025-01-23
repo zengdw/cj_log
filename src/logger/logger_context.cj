@@ -9,13 +9,21 @@ import cj_log.config.{LogConfig, LoggerConfig}
 public class LoggerContext {
     public static let ROOT_LOGGER_NAME = "ROOT"
 
-    private var defaultPattern = "%{d(yyyy-MM-dd HH:mm:ss)} -%{5p} %{logger}:%{line} %{msg}"
     private var loggerCache = HashMap<String, CjLogger>()
-    private var root: ?CjLogger = None
+    private var root: CjLogger
     private var _level: ?LogLevel = None
     private var _pattern: ?String = None
     private var writers: HashMap<String, AbstractWriter>
     private var mtx = ReentrantMutex()
+
+    public init(logConfig: LogConfig, writers: HashMap<String, AbstractWriter>) {
+        this.writers = writers
+        root = CjLogger(ROOT_LOGGER_NAME, None, logConfig.level)
+        root.writers  = getWeriters(logConfig.writerNames)
+        loggerCache.add(ROOT_LOGGER_NAME, root)
+
+        createDefaultLogger(logConfig.loggers)
+    }
 
     public mut prop level: ?LogLevel {
         get() {
@@ -34,17 +42,6 @@ public class LoggerContext {
         }
     }
 
-    public init(logConfig: LogConfig, writers: HashMap<String, AbstractWriter>) {
-        this.writers = writers
-        var rootLogger = CjLogger(ROOT_LOGGER_NAME, this, None, logConfig.level)
-        rootLogger.addWriter(getWeriters(logConfig.writerNames))
-        loggerCache.add(ROOT_LOGGER_NAME, rootLogger)
-
-        createDefaultLogger(logConfig.loggers, rootLogger)
-
-        root = rootLogger
-    }
-
     func getWeriters(writerNames: ArrayList<String>) {
         var ws = ArrayList<AbstractWriter>()
         for (name in writerNames) {
@@ -55,7 +52,7 @@ public class LoggerContext {
         return ws
     }
 
-    func createDefaultLogger(configs: ArrayList<LoggerConfig>, parent: CjLogger) {
+    func createDefaultLogger(configs: ArrayList<LoggerConfig>) {
         configs.sortBy(
             comparator: {
                 c1, c2 => if (c1.loggerName.size > c2.loggerName.size) {
@@ -71,7 +68,7 @@ public class LoggerContext {
             var parent = findParentLogger(loggerName)
             var logger = parent.createChildLogger(loggerName)
             logger.level = config.level ?? parent.level
-            logger.addWriter(parent.writers)
+            logger.writers = parent.writers
             logger.additive = config.additivity
             loggerCache.add(loggerName, logger)
         }
@@ -108,7 +105,7 @@ public class LoggerContext {
             if (let Some(parent) <- loggerCache.get(loggerName)) {
                 return parent
             } else {
-                return root.getOrThrow() /* cjlint-ignore !G.ERR.03 */
+                return root
             }
         }
     }

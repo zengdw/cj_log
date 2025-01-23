@@ -28,7 +28,7 @@ public abstract class AbstractWriter <: Writer {
             }
             return p + "\n"
         } else {
-            println("日志pattern配置错误")
+            println("cj_log: The log pattern is incorrectly configured")
             return ""
         }
     }

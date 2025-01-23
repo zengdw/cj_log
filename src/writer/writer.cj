@@ -5,17 +5,8 @@ internal import std.collection.{ArrayList, HashMap}
 import std.reflect.{TypeInfo, ClassTypeInfo}
 internal import cj_log.config.{LogWriterConfig}
 
-let CACHE_WRITER_MAP: HashMap<String, Writer> = HashMap()
-
-public func getWriterArray() {
-    CACHE_WRITER_MAP.values().toArray()
-}
-
-public func getWriter(writerName: String) {
-    CACHE_WRITER_MAP.get(writerName)
-}
-
 public func createWriters(writerConfigs: ArrayList<LogWriterConfig>, pattern: ?String) {
+    let writerMap: HashMap<String, AbstractWriter> = HashMap()
     for (w in writerConfigs) {
         let ti = TypeInfo.get(w.writerClass)
         let cti = match (ti as ClassTypeInfo) {
@@ -31,8 +22,9 @@ public func createWriters(writerConfigs: ArrayList<LogWriterConfig>, pattern: ?S
             w.pattern = pattern
         }
         buildFun.apply(writer, w)
-        CACHE_WRITER_MAP.add(w.writerName, writer)
+        writerMap.add(w.writerName, writer)
     }
+    return writerMap
 }
 
 public interface Writer {

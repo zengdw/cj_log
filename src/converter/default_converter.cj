@@ -13,7 +13,7 @@ public class DefaultConverter <: AbstractConverter {
             if (attr[0] == propName) {
                 propValue = match (attr[1]) {
                     case s: String => s
-                    case i: Int64 => i.toString()
+                    case i: ToString => i.toString()
                     case _ => ""
                 }
                 break

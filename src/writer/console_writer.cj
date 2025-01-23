@@ -22,7 +22,7 @@ public class ConsoleWriter <: AbstractWriter {
     }
 
     public func close() {
-        println("ConsoleWriter close")
+        println("cj_log: ConsoleWriter close")
     }
 
     public func build(c: LogWriterConfig): Unit {

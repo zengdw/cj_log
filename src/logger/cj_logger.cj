@@ -12,14 +12,12 @@ public class CjLogger <: Logger {
     private var _close = false
     private var _additive = true
     private var name: String
-    private var loggerContext: LoggerContext
-    private var writers = ArrayList<AbstractWriter>()
+    private var _writers = ArrayList<AbstractWriter>()
     private var parent: ?CjLogger
     private var children = ArrayList<CjLogger>()
 
-    init(name: String, loggerContext: LoggerContext, parent: ?CjLogger, level: LogLevel) {
+    init(name: String, parent: ?CjLogger, level: LogLevel) {
         this.name = name
-        this.loggerContext = loggerContext
         this.parent = parent
         this._level = level
     }
@@ -42,26 +40,28 @@ public class CjLogger <: Logger {
         }
     }
 
-    public prop attrs: ArrayList<Attr> {
+    public mut prop writers: ArrayList<AbstractWriter> {
         get() {
-            _attrs
+            _writers
+        }
+        set(v) {
+            _writers = v
         }
     }
 
-    func addWriter(writers: ArrayList<AbstractWriter>) {
-        this.writers.add(all: writers)
-    }
-
     func createChildLogger(name: String): CjLogger {
-        var logger = CjLogger(name, this.loggerContext, this, this.level)
+        var logger = CjLogger(name, this, this.level)
         logger.additive = this.additive
-        _attrs.add(("logger", name))
+        logger.withAttrs(("logger", name))
         children.add(logger)
         return logger
     }
 
     public func close() {
         _close = true
+        for (w in writers) {
+            w.close()
+        }
     }
 
     public func isClosed(): Bool {
@@ -98,9 +98,8 @@ public class CjLogger <: Logger {
                 localMapArr[i] = (k, v)
                 i += 1
             }
-            var attrs1 = attrs.toArray().concat(localMapArr).concat(record.attrs)
+            var attrs1 = _attrs.toArray().concat(localMapArr).concat(record.attrs)
             record.attrs = attrs1
-
             var logger = this
             while (true) {
                 for (w in logger.writers) {
@@ -108,6 +107,8 @@ public class CjLogger <: Logger {
                 }
                 if (logger.additive && let Some(l) <- logger.parent) {
                     logger = l
+                } else {
+                    break
                 }
             }
         }
