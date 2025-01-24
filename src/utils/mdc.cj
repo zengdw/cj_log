@@ -19,4 +19,13 @@ public class MDC {
     public static func localMap() {
         threadLocalMap.get() ?? HashMap<String, String>()
     }
+
+    public static func putAll(map: HashMap<String, String>): Unit {
+        let _map = threadLocalMap.get()
+        if (let Some(m) <- _map) {
+            m.add(all: map)
+        } else {
+            threadLocalMap.set(map)
+        }
+    }
 }

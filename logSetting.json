@@ -1,6 +1,6 @@
 {
   "level": "INFO",
-  "pattern": "%{d(yyyy-MM-dd HH:mm:ss)} -%{5p} %{logger}:%{line} %{msg}",
+  "pattern": "%{d(yyyy-MM-dd HH:mm:ss)} -%{5p} %{mdcKey} %{logger}:%{line} %{msg}",
   "writerNames": [
     "consoleWriter",
     "fileWriter"

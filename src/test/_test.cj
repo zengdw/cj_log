@@ -40,7 +40,7 @@ func testProp() {
 @Tag[mdcTest]
 @Log
 func mdcTest() {
-    MDC.put("testProp", "123")
+    MDC.put("mdcKey", "mdcValue")
     log.info("testProp")
     log.info("testProp222")
 }
