@@ -46,7 +46,7 @@ public class ContextInitializer {
 
     private init() {
         // 读取配置文件信息
-        let logSetting = Process.current.getEnv("CL_LOG_SETTING") ?? DEFAULT_CONFIG_PATH
+        let logSetting = Process.current.getEnv("CJ_LOG_SETTING") ?? DEFAULT_CONFIG_PATH
         let logConfigOp = readSettingFile(logSetting)
         var logConfig = match (logConfigOp) {
             case Some(config) => config
